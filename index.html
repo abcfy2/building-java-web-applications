@@ -40,50 +40,593 @@
      Table of Contents
     </div> 
     <ul class="sectlevel1"> 
+     <li><a href="#introduction">Introduction</a></li> 
      <li><a href="#what_you_ll_build">What you’ll build</a></li> 
      <li><a href="#what_you_ll_need">What you’ll need</a></li> 
-     <li><a href="#step_1">Step 1</a></li> 
-     <li><a href="#step_2">Step 2</a></li> 
-     <li><a href="#step_n">Step N</a></li> 
+     <li><a href="#create_the_structure_of_a_web_application">Create the structure of a web application</a></li> 
+     <li><a href="#add_a_gradle_build_file">Add a Gradle build file</a></li> 
+     <li><a href="#add_a_servlet_and_metadata_to_the_project">Add a servlet and metadata to the project</a></li> 
+     <li><a href="#add_jsp_pages_to_the_demo_application">Add JSP pages to the demo application</a></li> 
+     <li><a href="#add_the_code_gretty_code_plugin_and_run_the_app">Add the <code>gretty</code> plugin and run the app</a></li> 
+     <li><a href="#test_the_servlet_using_mockito">Test the servlet using Mockito</a></li> 
      <li><a href="#summary">Summary</a></li> 
+     <li><a href="#next_steps">Next steps</a></li> 
     </ul> 
    </div> 
   </div> 
   <div id="content"> 
    <div class="sect1"> 
+    <h2 id="introduction"><a class="anchor" href="#introduction"></a>Introduction</h2> 
+    <div class="sectionbody"> 
+     <div class="paragraph"> 
+      <p>Gradle includes a <code>war</code> plugin for building Java web applications, and the community supplies an excellent plugin called <code>gretty</code> for testing and deploying web applications on Jetty or Tomcat. This guide demonstrates how to build a simple web app, deploy it on Jetty, and test it using Mockito.</p> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
     <h2 id="what_you_ll_build"><a class="anchor" href="#what_you_ll_build"></a>What you’ll build</h2> 
     <div class="sectionbody"> 
+     <div class="paragraph"> 
+      <p>You will create a web application in the default Gradle structure, add dependencies for the Servlet API and the Mockito testing framework, add the <code>gretty</code> plugin, then build and test the application.</p> 
+     </div> 
     </div> 
    </div> 
    <div class="sect1"> 
     <h2 id="what_you_ll_need"><a class="anchor" href="#what_you_ll_need"></a>What you’ll need</h2> 
     <div class="sectionbody"> 
+     <div class="ulist"> 
+      <ul> 
+       <li> <p>About XX minutes (TODO)</p> </li> 
+       <li> <p>A text editor or IDE</p> </li> 
+       <li> <p>A Java distribution, version 7 or higher</p> </li> 
+       <li> <p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 3.3 or better</p> </li> 
+      </ul> 
+     </div> 
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="step_1"><a class="anchor" href="#step_1"></a>Step 1</h2> 
+    <h2 id="create_the_structure_of_a_web_application"><a class="anchor" href="#create_the_structure_of_a_web_application"></a>Create the structure of a web application</h2> 
     <div class="sectionbody"> 
+     <div class="paragraph"> 
+      <p>Gradle includes a <code>war</code> plugin that is documented in the <a href="https://docs.gradle.org/3.3/userguide/web_project_tutorial.html">Web Application Quickstart</a> and the <a href="https://docs.gradle.org/3.3/userguide/war_plugin.html" class="bare">https://docs.gradle.org/3.3/userguide/war_plugin.html</a> chapters of the user manual. The <code>war</code> plugin extends the Java plugin to add support for web applications. By default, it uses a folder called <code>src/main/webapp</code> for web-related resources.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>Therefore, create the following file structure for a project called <code>webdemo</code>:</p> 
+     </div> 
+     <div class="listingblock"> 
+      <div class="title">
+       Sample project layout
+      </div> 
+      <div class="content"> 
+       <pre>webdemo/
+    src/
+        main/
+            java/
+            webapp/
+        test
+            java/</pre> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>Any servlets or other Java classes will go in <code>src/main/java</code>, tests will go in <code>src/test/java</code>, and other web artifacts will go in <code>src/main/webapp</code>.</p> 
+     </div> 
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="step_2"><a class="anchor" href="#step_2"></a>Step 2</h2> 
+    <h2 id="add_a_gradle_build_file"><a class="anchor" href="#add_a_gradle_build_file"></a>Add a Gradle build file</h2> 
     <div class="sectionbody"> 
+     <div class="paragraph"> 
+      <p>Add a file called <code>build.gradle</code> to the root of the project, with the following contents:</p> 
+     </div> 
+     <div class="exampleblock"> 
+      <div class="title">
+       Example 1. build.gradle
+      </div> 
+      <div class="content"> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="CodeRay highlight"><code data-lang="groovy">plugins {
+    id <span class="string"><span class="delimiter">'</span><span class="content">java</span><span class="delimiter">'</span></span>
+    id <span class="string"><span class="delimiter">'</span><span class="content">war</span><span class="delimiter">'</span></span>  <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    providedCompile <span class="string"><span class="delimiter">'</span><span class="content">javax.servlet:javax.servlet-api:3.1.0</span><span class="delimiter">'</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
+    testCompile <span class="string"><span class="delimiter">'</span><span class="content">junit:junit:4.12</span><span class="delimiter">'</span></span>
+}</code></pre> 
+        </div> 
+       </div> 
+       <div class="colist arabic"> 
+        <table> 
+         <tbody>
+          <tr> 
+           <td><i class="conum" data-value="1"></i><b>1</b></td> 
+           <td>Using the <code>war</code> plugin</td> 
+          </tr> 
+          <tr> 
+           <td><i class="conum" data-value="2"></i><b>2</b></td> 
+           <td>Current release version of the servlet API</td> 
+          </tr> 
+         </tbody>
+        </table> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>The <code>war</code> plugin adds the configurations <code>providedCompile</code> and <code>providedRuntime</code>, analogous to <code>compile</code> and <code>runtime</code> in regular Java applications, to represent dependencies that are needed locally but should not be added to the generated <code>webdemo.war</code> file.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>The <code>plugins</code> syntax is used to apply the <code>java</code> and <code>war</code> plugins. No version is needed for either, since they are included with the Gradle distribution.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>It is a good practice to generate a Gradle wrapper for the project by executing the <code>wrapper</code> task:</p> 
+     </div> 
+     <div class="listingblock"> 
+      <div class="content"> 
+       <pre>&gt; gradle wrapper
+:wrapper</pre> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>This will produce <code>gradlew</code> and <code>gradlew.bat</code> scripts and the <code>gradle</code> folder with the wrapper jar inside as described in the <a href="https://docs.gradle.org/3.3/userguide/gradle_wrapper.html" class="bare">https://docs.gradle.org/3.3/userguide/gradle_wrapper.html</a> section of the User Manual.</p> 
+     </div> 
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="step_n"><a class="anchor" href="#step_n"></a>Step N</h2> 
+    <h2 id="add_a_servlet_and_metadata_to_the_project"><a class="anchor" href="#add_a_servlet_and_metadata_to_the_project"></a>Add a servlet and metadata to the project</h2> 
     <div class="sectionbody"> 
+     <div class="paragraph"> 
+      <p>There are two options for defining web application metadata. Prior to version 3.0 of the servlet specification, metadata resided in a deployment descriptor called <code>web.xml</code> in the <code>WEB-INF</code> folder of the project. Since 3.0, the metadata can be defined using annotations.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>If you wish to use annotations, add a servlet called <code>org.gradle.demo.HelloServlet</code> to the <code>src/main/java</code> folder, in package structure, with the following contents:</p> 
+     </div> 
+     <div class="exampleblock"> 
+      <div class="title">
+       Example 2. 
+       <code>src/main/java/com/gradle/demo/HelloServlet.java</code>
+      </div> 
+      <div class="content"> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.gradle.demo</span>;
+
+<span class="keyword">import</span> <span class="include">javax.servlet.ServletException</span>;
+<span class="keyword">import</span> <span class="include">javax.servlet.annotation.WebServlet</span>;
+<span class="keyword">import</span> <span class="include">javax.servlet.http.HttpServlet</span>;
+<span class="keyword">import</span> <span class="include">javax.servlet.http.HttpServletRequest</span>;
+<span class="keyword">import</span> <span class="include">javax.servlet.http.HttpServletResponse</span>;
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="annotation">@WebServlet</span>(name = <span class="string"><span class="delimiter">"</span><span class="content">HelloServlet</span><span class="delimiter">"</span></span>, urlPatterns = {<span class="string"><span class="delimiter">"</span><span class="content">hello</span><span class="delimiter">"</span></span>}, loadOnStartup = <span class="integer">1</span>) <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HelloServlet</span> <span class="directive">extends</span> HttpServlet {
+    <span class="directive">protected</span> <span class="type">void</span> doGet(HttpServletRequest request, HttpServletResponse response)
+          <span class="directive">throws</span> ServletException, <span class="exception">IOException</span> {
+        response.getWriter().print(<span class="string"><span class="delimiter">"</span><span class="content">Hello, World!</span><span class="delimiter">"</span></span>);  <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+    <span class="directive">protected</span> <span class="type">void</span> doPost(HttpServletRequest request, HttpServletResponse response)
+            <span class="directive">throws</span> ServletException, <span class="exception">IOException</span> {
+        <span class="predefined-type">String</span> name = request.getParameter(<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span>);
+        <span class="keyword">if</span> (name == <span class="predefined-constant">null</span>) name = <span class="string"><span class="delimiter">"</span><span class="content">World</span><span class="delimiter">"</span></span>;
+        request.setAttribute(<span class="string"><span class="delimiter">"</span><span class="content">user</span><span class="delimiter">"</span></span>, name);
+        request.getRequestDispatcher(<span class="string"><span class="delimiter">"</span><span class="content">response.jsp</span><span class="delimiter">"</span></span>).forward(request, response); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+}</code></pre> 
+        </div> 
+       </div> 
+       <div class="colist arabic"> 
+        <table> 
+         <tbody>
+          <tr> 
+           <td><i class="conum" data-value="1"></i><b>1</b></td> 
+           <td>Annotation-based servlet</td> 
+          </tr> 
+          <tr> 
+           <td><i class="conum" data-value="2"></i><b>2</b></td> 
+           <td>GET request returns a simple string</td> 
+          </tr> 
+          <tr> 
+           <td><i class="conum" data-value="3"></i><b>3</b></td> 
+           <td>POST request forwards to a JSP page</td> 
+          </tr> 
+         </tbody>
+        </table> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>The servlet uses the <code>@WebServlet</code> annotation for configuration. The <code>doGet</code> method responds to HTTP GET requests by writing a "Hello, World!" string to the output writer. It reacts to HTTP POST requests by looking for a request parameter called <code>name</code> and adding it to the <code>request</code> as an attribute called <code>user</code>, then forwarding to a <code>response.jsp</code> page.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>If you prefer to use the older style of metadata, define a file called <code>web.xml</code> in the directory <code>src/main/webapp/WEB-INF</code> with the following contents:</p> 
+     </div> 
+     <div class="exampleblock"> 
+      <div class="title">
+       Example 3. 
+       <code>src/main/webapp/WEB-INF/web.xml</code> (optional)
+      </div> 
+      <div class="content"> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="tag">&lt;web-app</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">"</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee</span><span class="delimiter">"</span></span>
+         <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">"</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">"</span></span>
+         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">"</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd</span><span class="delimiter">"</span></span>
+         <span class="attribute-name">version</span>=<span class="string"><span class="delimiter">"</span><span class="content">3.1</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>
+
+    <span class="tag">&lt;servlet&gt;</span>
+        <span class="tag">&lt;servlet-name&gt;</span>helloServlet<span class="tag">&lt;/servlet-name&gt;</span>
+        <span class="tag">&lt;servlet-class&gt;</span>org.gradle.demo.HelloServlet<span class="tag">&lt;/servlet-class&gt;</span>
+        <span class="tag">&lt;load-on-startup&gt;</span>1<span class="tag">&lt;/load-on-startup&gt;</span>
+    <span class="tag">&lt;/servlet&gt;</span>
+
+    <span class="tag">&lt;servlet-mapping&gt;</span>
+        <span class="tag">&lt;servlet-name&gt;</span>helloServlet<span class="tag">&lt;/servlet-name&gt;</span>
+        <span class="tag">&lt;url-pattern&gt;</span>hello<span class="tag">&lt;/url-pattern&gt;</span>
+    <span class="tag">&lt;/servlet-mapping&gt;</span>
+<span class="tag">&lt;/web-app&gt;</span></code></pre> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>This is equivalent to the information given in the <code>@WebServlet</code> annotation, so if you choose to use the <code>web.xml</code> file, delete the <code>@WebServlet</code> annotation.</p> 
+     </div> 
+     <div class="admonitionblock warning"> 
+      <table> 
+       <tbody>
+        <tr> 
+         <td class="icon"> <i class="fa icon-warning" title="Warning"></i> </td> 
+         <td class="content"> Do not include both the <code>@WebServlet</code> annotation and the <code>servlet</code> and <code>servlet-mapping</code> tags in the <code>web.xml</code> file. Use one or the other. </td> 
+        </tr> 
+       </tbody>
+      </table> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
+    <h2 id="add_jsp_pages_to_the_demo_application"><a class="anchor" href="#add_jsp_pages_to_the_demo_application"></a>Add JSP pages to the demo application</h2> 
+    <div class="sectionbody"> 
+     <div class="paragraph"> 
+      <p>Add an index page to the root of the application by creating the file <code>index.jsp</code> in the <code>src/main/webapp</code> folder, with the following contents:</p> 
+     </div> 
+     <div class="exampleblock"> 
+      <div class="title">
+       Example 4. 
+       <code>src/main/webapp/index.jsp</code>
+      </div> 
+      <div class="content"> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="CodeRay highlight"><code data-lang="html"><span class="error">&lt;</span>%@ page contentType="text/html;charset=UTF-8" language="java" %<span class="error">&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Web Demo<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;p&gt;</span>Say <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">"</span><span class="content">hello</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Hello<span class="tag">&lt;/a&gt;</span><span class="tag">&lt;/p&gt;</span>  <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="tag">&lt;form</span> <span class="attribute-name">method</span>=<span class="string"><span class="delimiter">"</span><span class="content">post</span><span class="delimiter">"</span></span> <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">"</span><span class="content">hello</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="tag">&lt;h2&gt;</span>Name:<span class="tag">&lt;/h2&gt;</span>
+        <span class="tag">&lt;input</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">text</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+        <span class="tag">&lt;input</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">submit</span><span class="delimiter">"</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">"</span><span class="content">Say Hello</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/form&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre> 
+        </div> 
+       </div> 
+       <div class="colist arabic"> 
+        <table> 
+         <tbody>
+          <tr> 
+           <td><i class="conum" data-value="1"></i><b>1</b></td> 
+           <td>Link submits GET request</td> 
+          </tr> 
+          <tr> 
+           <td><i class="conum" data-value="2"></i><b>2</b></td> 
+           <td>Form uses POST request</td> 
+          </tr> 
+         </tbody>
+        </table> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>The <code>index.jsp</code> page uses a link to submit an HTTP GET request to the servlet, and a form to submit an HTTP POST request. The form contains a text field called <code>name</code>, which is accessed by the servlet in its <code>doPost</code> method.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>In its <code>doPost</code> method, the servlet forwards control to another JSP page called <code>response.jsp</code>. Therefore define a file of that name inside <code>src/main/webapp</code> with the following contents:</p> 
+     </div> 
+     <div class="exampleblock"> 
+      <div class="title">
+       Example 5. 
+       <code>src/main/webapp/response.jsp</code>
+      </div> 
+      <div class="content"> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="CodeRay highlight"><code data-lang="html"><span class="error">&lt;</span>%@ page contentType="text/html;charset=UTF-8" language="java" %<span class="error">&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+    <span class="tag">&lt;head&gt;</span>
+        <span class="tag">&lt;title&gt;</span>Hello Page<span class="tag">&lt;/title&gt;</span>
+    <span class="tag">&lt;/head&gt;</span>
+    <span class="tag">&lt;body&gt;</span>
+        <span class="tag">&lt;h2&gt;</span>Hello, ${user}!<span class="tag">&lt;/h2&gt;</span>
+    <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>The <code>response</code> page accessed the <code>user</code> variable from the request and renders it inside an <code>h2</code> tag.</p> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
+    <h2 id="add_the_code_gretty_code_plugin_and_run_the_app"><a class="anchor" href="#add_the_code_gretty_code_plugin_and_run_the_app"></a>Add the <code>gretty</code> plugin and run the app</h2> 
+    <div class="sectionbody"> 
+     <div class="paragraph"> 
+      <p>The <code>gretty</code> plugin is an outstanding community-supported plugin that can be found in the Gradle plugin repository at <code><a href="https://plugins.gradle.org/plugin/org.akhikhl.gretty" class="bare">https://plugins.gradle.org/plugin/org.akhikhl.gretty</a></code>. The plugin makes it easy to run or test webapps on either Jetty or Tomcat.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>Add it to our project by adding the following line to the <code>plugins</code> block inside <code>build.gradle</code>.</p> 
+     </div> 
+     <div class="exampleblock"> 
+      <div class="title">
+       Example 6. Updating 
+       <code>build.gradle</code> to add 
+       <code>gretty</code>
+      </div> 
+      <div class="content"> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="CodeRay highlight"><code data-lang="groovy">plugins {
+    id <span class="string"><span class="delimiter">'</span><span class="content">java</span><span class="delimiter">'</span></span>
+    id <span class="string"><span class="delimiter">'</span><span class="content">war</span><span class="delimiter">'</span></span>
+    id <span class="string"><span class="delimiter">'</span><span class="content">org.akhikhl.gretty</span><span class="delimiter">'</span></span> version <span class="string"><span class="delimiter">'</span><span class="content">1.4.2</span><span class="delimiter">'</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre> 
+        </div> 
+       </div> 
+       <div class="colist arabic"> 
+        <table> 
+         <tbody>
+          <tr> 
+           <td><i class="conum" data-value="1"></i><b>1</b></td> 
+           <td>Adding the <code>gretty</code> plugin</td> 
+          </tr> 
+         </tbody>
+        </table> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>The <code>gretty</code> plugin adds a large number of tasks to the application, useful for running or testing in Jetty or Tomcat environments. Now you can build and deploy the app to the default (Jetty) container by using the <code>appRun</code> task.</p> 
+     </div> 
+     <div class="exampleblock"> 
+      <div class="title">
+       Example 7. Executing the 
+       <code>appRun</code> task
+      </div> 
+      <div class="content"> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre>&gt; ./gradlew appRun
+:prepareInplaceWebAppFolder
+:createInplaceWebAppFolder UP-TO-DATE
+:compileJava
+:processResources UP-TO-DATE
+:classes
+:prepareInplaceWebAppClasses
+:prepareInplaceWebApp
+:appRun
+12:25:13 INFO  Jetty 9.2.15.v20160210 started and listening on port 8080
+12:25:13 INFO  webdemo runs at:
+12:25:13 INFO    http://localhost:8080/webdemo
+Press any key to stop the server. <i class="conum" data-value="1"></i><b>(1)</b>
+&gt; Building 87% &gt; :appRun
+
+BUILD SUCCESSFUL</pre> 
+        </div> 
+       </div> 
+       <div class="colist arabic"> 
+        <table> 
+         <tbody>
+          <tr> 
+           <td><i class="conum" data-value="1"></i><b>1</b></td> 
+           <td>Waits for any keypress</td> 
+          </tr> 
+         </tbody>
+        </table> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>You can now access the web app at <a href="http://localhost:8080/webdemo" class="bare">http://localhost:8080/webdemo</a> and either click on the link to execute a GET request or submit the form to execute a POST request.</p> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
+    <h2 id="test_the_servlet_using_mockito"><a class="anchor" href="#test_the_servlet_using_mockito"></a>Test the servlet using Mockito</h2> 
+    <div class="sectionbody"> 
+     <div class="paragraph"> 
+      <p>The open source <a href="http://site.mockito.org/">Mockito framework</a> makes it easy to unit test Java applications. Add the Mockito dependency to the <code>build.gradle</code> file under the <code>testCompile</code> configuration.</p> 
+     </div> 
+     <div class="exampleblock"> 
+      <div class="title">
+       Example 8. Adding the Mockito library to 
+       <code>build.gradle</code>
+      </div> 
+      <div class="content"> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">// ... from earlier ...</span>
+
+dependencies {
+    providedCompile <span class="string"><span class="delimiter">'</span><span class="content">javax.servlet:javax.servlet-api:3.1.0</span><span class="delimiter">'</span></span>
+    testCompile <span class="string"><span class="delimiter">'</span><span class="content">junit:junit:4.12</span><span class="delimiter">'</span></span>
+    testCompile <span class="string"><span class="delimiter">'</span><span class="content">org.mockito:mockito-core:2.7.19</span><span class="delimiter">'</span></span>  <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre> 
+        </div> 
+       </div> 
+       <div class="colist arabic"> 
+        <table> 
+         <tbody>
+          <tr> 
+           <td><i class="conum" data-value="1"></i><b>1</b></td> 
+           <td>Adding Mockito</td> 
+          </tr> 
+         </tbody>
+        </table> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>To test the servlet, create a Java class called <code>org.gradle.demo.HelloServletTest</code> in the <code>src/test/java</code> directory, with the following contents:</p> 
+     </div> 
+     <div class="exampleblock"> 
+      <div class="title">
+       Example 9. 
+       <code>src/test/java/org/gradle/demo/HelloServletTest.java</code>
+      </div> 
+      <div class="content"> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.gradle.demo</span>;
+
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+<span class="keyword">import</span> <span class="include">org.mockito.Mock</span>;
+<span class="keyword">import</span> <span class="include">org.mockito.MockitoAnnotations</span>;
+
+<span class="keyword">import</span> <span class="include">javax.servlet.RequestDispatcher</span>;
+<span class="keyword">import</span> <span class="include">javax.servlet.http.HttpServletRequest</span>;
+<span class="keyword">import</span> <span class="include">javax.servlet.http.HttpServletResponse</span>;
+<span class="keyword">import</span> <span class="include">java.io.PrintWriter</span>;
+<span class="keyword">import</span> <span class="include">java.io.StringWriter</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert.assertEquals</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.Mockito</span>.*;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HelloServletTest</span> {
+    <span class="annotation">@Mock</span> <span class="directive">private</span> HttpServletRequest request;
+    <span class="annotation">@Mock</span> <span class="directive">private</span> HttpServletResponse response;
+    <span class="annotation">@Mock</span> <span class="directive">private</span> RequestDispatcher requestDispatcher;
+
+    <span class="annotation">@Before</span>
+    <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        MockitoAnnotations.initMocks(<span class="local-variable">this</span>);
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> doGet() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        <span class="predefined-type">StringWriter</span> stringWriter = <span class="keyword">new</span> <span class="predefined-type">StringWriter</span>();
+        <span class="predefined-type">PrintWriter</span> printWriter = <span class="keyword">new</span> <span class="predefined-type">PrintWriter</span>(stringWriter);
+
+        when(response.getWriter()).thenReturn(printWriter);
+
+        <span class="keyword">new</span> HelloServlet().doGet(request, response);
+
+        assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">Hello, World!</span><span class="delimiter">"</span></span>, stringWriter.toString());
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> doPostWithoutName() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        when(request.getRequestDispatcher(<span class="string"><span class="delimiter">"</span><span class="content">response.jsp</span><span class="delimiter">"</span></span>))
+            .thenReturn(requestDispatcher);
+
+        <span class="keyword">new</span> HelloServlet().doPost(request, response);
+
+        verify(request).setAttribute(<span class="string"><span class="delimiter">"</span><span class="content">user</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">World</span><span class="delimiter">"</span></span>);
+        verify(requestDispatcher).forward(request,response);
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> doPostWithName() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        when(request.getParameter(<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span>)).thenReturn(<span class="string"><span class="delimiter">"</span><span class="content">Dolly</span><span class="delimiter">"</span></span>);
+        when(request.getRequestDispatcher(<span class="string"><span class="delimiter">"</span><span class="content">response.jsp</span><span class="delimiter">"</span></span>))
+            .thenReturn(requestDispatcher);
+
+        <span class="keyword">new</span> HelloServlet().doPost(request, response);
+
+        verify(request).setAttribute(<span class="string"><span class="delimiter">"</span><span class="content">user</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">Dolly</span><span class="delimiter">"</span></span>);
+        verify(requestDispatcher).forward(request,response);
+    }
+}</code></pre> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>The test creates mock objects for the <code>HttpServletRequest</code>, <code>HttpServletResponse</code>, and <code>RequestDispatcher</code> classes. For the <code>doGet</code> test, a <code>PrintWriter</code> that uses a <code>StringWriter</code> is created, and the mock request object is configured to return it when the <code>getWriter</code> method is invoked. After calling the <code>doGet</code> method, the test checks that the returned string is correct.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>For the post requests, the mock request is configured to return a given name if present or null otherwise, and the <code>getRequestDispatcher</code> method returns the associated mock object. Calling the <code>doPost</code> method executes the request. Mockito then verifies that the <code>setAttribute</code> method was invoked on the mock response with the proper arguments and that the <code>forward</code> method was called on the request dispatcher.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>You can now test the servlet using Gradle with the <code>test</code> task (or any task, like <code>build</code>, that depends on it).</p> 
+     </div> 
+     <div class="listingblock"> 
+      <div class="content"> 
+       <pre>&gt; ./gradlew build
+:compileJava UP-TO-DATE
+:processResources UP-TO-DATE
+:classes UP-TO-DATE
+:war
+:assemble
+:compileTestJava
+:processTestResources UP-TO-DATE
+:testClasses
+:test
+:check
+:build
+
+BUILD SUCCESSFUL</pre> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>The test output can be accessed from <code>build/reports/tests/test/index.html</code> in the usual manner. You should get a result similar to:</p> 
+     </div> 
+     <div class="imageblock"> 
+      <div class="content"> 
+       <img src="images/test-results.png" alt="test results"> 
+      </div> 
+     </div> 
     </div> 
    </div> 
    <div class="sect1"> 
     <h2 id="summary"><a class="anchor" href="#summary"></a>Summary</h2> 
     <div class="sectionbody"> 
+     <div class="paragraph"> 
+      <p>In this guide, you learned how to:</p> 
+     </div> 
+     <div class="ulist"> 
+      <ul> 
+       <li> <p>Use the <code>war</code> plugin in Gradle builds to define a web application</p> </li> 
+       <li> <p>Add a servlet and JSP pages to a web app</p> </li> 
+       <li> <p>Use the <code>gretty</code> plugin to deploy the application</p> </li> 
+       <li> <p>Test a servlet using the Mockito framework</p> </li> 
+      </ul> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
+    <h2 id="next_steps"><a class="anchor" href="#next_steps"></a>Next steps</h2> 
+    <div class="sectionbody"> 
+     <div class="paragraph"> 
+      <p>Gretty can be used to do integration tests, deploy to clusters, and more. See the documentation at <a href="http://akhikhl.github.io/gretty-doc/" class="bare">http://akhikhl.github.io/gretty-doc/</a> for details.</p> 
+     </div> 
     </div> 
    </div> 
   </div> 
   <div id="footer"> 
    <div id="footer-text">
-     Last updated 2017-03-24 18:03:54 UTC 
+     Last updated 2017-03-24 22:16:54 UTC 
    </div> 
   </div>  
  </body>

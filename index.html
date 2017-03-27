@@ -48,7 +48,9 @@
      <li><a href="#add_a_servlet_and_metadata_to_the_project">Add a servlet and metadata to the project</a></li> 
      <li><a href="#add_jsp_pages_to_the_demo_application">Add JSP pages to the demo application</a></li> 
      <li><a href="#add_the_code_gretty_code_plugin_and_run_the_app">Add the <code>gretty</code> plugin and run the app</a></li> 
-     <li><a href="#test_the_servlet_using_mockito">Test the servlet using Mockito</a></li> 
+     <li><a href="#unit_test_the_servlet_using_mockito">Unit test the servlet using Mockito</a></li> 
+     <li><a href="#add_a_functional_test">Add a functional test</a></li> 
+     <li><a href="#run_the_functional_test">Run the functional test</a></li> 
      <li><a href="#summary">Summary</a></li> 
      <li><a href="#next_steps">Next steps</a></li> 
     </ul> 
@@ -183,7 +185,7 @@ dependencies {
       <p>There are two options for defining web application metadata. Prior to version 3.0 of the servlet specification, metadata resided in a deployment descriptor called <code>web.xml</code> in the <code>WEB-INF</code> folder of the project. Since 3.0, the metadata can be defined using annotations.</p> 
      </div> 
      <div class="paragraph"> 
-      <p>If you wish to use annotations, add a servlet called <code>org.gradle.demo.HelloServlet</code> to the <code>src/main/java</code> folder, in package structure, with the following contents:</p> 
+      <p>Add a servlet called <code>org.gradle.demo.HelloServlet</code> to the <code>src/main/java</code> folder, in package structure, with the following contents:</p> 
      </div> 
      <div class="exampleblock"> 
       <div class="title">
@@ -242,50 +244,18 @@ dependencies {
      <div class="paragraph"> 
       <p>The servlet uses the <code>@WebServlet</code> annotation for configuration. The <code>doGet</code> method responds to HTTP GET requests by writing a "Hello, World!" string to the output writer. It reacts to HTTP POST requests by looking for a request parameter called <code>name</code> and adding it to the <code>request</code> as an attribute called <code>user</code>, then forwarding to a <code>response.jsp</code> page.</p> 
      </div> 
-     <div class="paragraph"> 
-      <p>If you prefer to use the older style of metadata, define a file called <code>web.xml</code> in the directory <code>src/main/webapp/WEB-INF</code> with the following contents:</p> 
-     </div> 
-     <div class="exampleblock"> 
-      <div class="title">
-       Example 3. 
-       <code>src/main/webapp/WEB-INF/web.xml</code> (optional)
-      </div> 
-      <div class="content"> 
-       <div class="listingblock"> 
-        <div class="content"> 
-         <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="tag">&lt;web-app</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">"</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee</span><span class="delimiter">"</span></span>
-         <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">"</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">"</span></span>
-         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">"</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd</span><span class="delimiter">"</span></span>
-         <span class="attribute-name">version</span>=<span class="string"><span class="delimiter">"</span><span class="content">3.1</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>
-
-    <span class="tag">&lt;servlet&gt;</span>
-        <span class="tag">&lt;servlet-name&gt;</span>helloServlet<span class="tag">&lt;/servlet-name&gt;</span>
-        <span class="tag">&lt;servlet-class&gt;</span>org.gradle.demo.HelloServlet<span class="tag">&lt;/servlet-class&gt;</span>
-        <span class="tag">&lt;load-on-startup&gt;</span>1<span class="tag">&lt;/load-on-startup&gt;</span>
-    <span class="tag">&lt;/servlet&gt;</span>
-
-    <span class="tag">&lt;servlet-mapping&gt;</span>
-        <span class="tag">&lt;servlet-name&gt;</span>helloServlet<span class="tag">&lt;/servlet-name&gt;</span>
-        <span class="tag">&lt;url-pattern&gt;</span>hello<span class="tag">&lt;/url-pattern&gt;</span>
-    <span class="tag">&lt;/servlet-mapping&gt;</span>
-<span class="tag">&lt;/web-app&gt;</span></code></pre> 
-        </div> 
-       </div> 
-      </div> 
-     </div> 
-     <div class="paragraph"> 
-      <p>This is equivalent to the information given in the <code>@WebServlet</code> annotation, so if you choose to use the <code>web.xml</code> file, delete the <code>@WebServlet</code> annotation.</p> 
-     </div> 
-     <div class="admonitionblock warning"> 
+     <div class="admonitionblock note"> 
       <table> 
        <tbody>
         <tr> 
-         <td class="icon"> <i class="fa icon-warning" title="Warning"></i> </td> 
-         <td class="content"> Do not include both the <code>@WebServlet</code> annotation and the <code>servlet</code> and <code>servlet-mapping</code> tags in the <code>web.xml</code> file. Use one or the other. </td> 
+         <td class="icon"> <i class="fa icon-note" title="Note"></i> </td> 
+         <td class="content"> The <code>war</code> plugin supports the use of the older <code>web.xml</code> deployment descriptor, which by default should reside in the <code>WEB-INF</code> folder under <code>src/main/webapp</code>. Feel free to use that as an alternative to the annotation-based approach. </td> 
         </tr> 
        </tbody>
       </table> 
+     </div> 
+     <div class="paragraph"> 
+      <p>You now have a simple servlet that responds to HTTP GET and POST requests.</p> 
      </div> 
     </div> 
    </div> 
@@ -293,30 +263,29 @@ dependencies {
     <h2 id="add_jsp_pages_to_the_demo_application"><a class="anchor" href="#add_jsp_pages_to_the_demo_application"></a>Add JSP pages to the demo application</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
-      <p>Add an index page to the root of the application by creating the file <code>index.jsp</code> in the <code>src/main/webapp</code> folder, with the following contents:</p> 
+      <p>Add an index page to the root of the application by creating the file <code>index.html</code> in the <code>src/main/webapp</code> folder, with the following contents:</p> 
      </div> 
      <div class="exampleblock"> 
       <div class="title">
-       Example 4. 
-       <code>src/main/webapp/index.jsp</code>
+       Example 3. 
+       <code>src/main/webapp/index.html</code>
       </div> 
       <div class="content"> 
        <div class="listingblock"> 
         <div class="content"> 
-         <pre class="CodeRay highlight"><code data-lang="html"><span class="error">&lt;</span>%@ page contentType="text/html;charset=UTF-8" language="java" %<span class="error">&gt;</span>
-<span class="tag">&lt;html&gt;</span>
-  <span class="tag">&lt;head&gt;</span>
-    <span class="tag">&lt;title&gt;</span>Web Demo<span class="tag">&lt;/title&gt;</span>
-  <span class="tag">&lt;/head&gt;</span>
-  <span class="tag">&lt;body&gt;</span>
-    <span class="tag">&lt;p&gt;</span>Say <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">"</span><span class="content">hello</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Hello<span class="tag">&lt;/a&gt;</span><span class="tag">&lt;/p&gt;</span>  <i class="conum" data-value="1"></i><b>(1)</b>
+         <pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;html&gt;</span>
+    <span class="tag">&lt;head&gt;</span>
+        <span class="tag">&lt;title&gt;</span>Web Demo<span class="tag">&lt;/title&gt;</span>
+    <span class="tag">&lt;/head&gt;</span>
+    <span class="tag">&lt;body&gt;</span>
+        <span class="tag">&lt;p&gt;</span>Say <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">"</span><span class="content">hello</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Hello<span class="tag">&lt;/a&gt;</span><span class="tag">&lt;/p&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-    <span class="tag">&lt;form</span> <span class="attribute-name">method</span>=<span class="string"><span class="delimiter">"</span><span class="content">post</span><span class="delimiter">"</span></span> <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">"</span><span class="content">hello</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="2"></i><b>(2)</b>
-        <span class="tag">&lt;h2&gt;</span>Name:<span class="tag">&lt;/h2&gt;</span>
-        <span class="tag">&lt;input</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">text</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
-        <span class="tag">&lt;input</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">submit</span><span class="delimiter">"</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">"</span><span class="content">Say Hello</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
-    <span class="tag">&lt;/form&gt;</span>
-  <span class="tag">&lt;/body&gt;</span>
+        <span class="tag">&lt;form</span> <span class="attribute-name">method</span>=<span class="string"><span class="delimiter">"</span><span class="content">post</span><span class="delimiter">"</span></span> <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">"</span><span class="content">hello</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>  <i class="conum" data-value="2"></i><b>(2)</b>
+            <span class="tag">&lt;h2&gt;</span>Name:<span class="tag">&lt;/h2&gt;</span>
+            <span class="tag">&lt;input</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">text</span><span class="delimiter">"</span></span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">say-hello-text-input</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+            <span class="tag">&lt;input</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">submit</span><span class="delimiter">"</span></span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">say-hello-button</span><span class="delimiter">"</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">"</span><span class="content">Say Hello</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+        <span class="tag">&lt;/form&gt;</span>
+    <span class="tag">&lt;/body&gt;</span>
 <span class="tag">&lt;/html&gt;</span></code></pre> 
         </div> 
        </div> 
@@ -337,14 +306,14 @@ dependencies {
       </div> 
      </div> 
      <div class="paragraph"> 
-      <p>The <code>index.jsp</code> page uses a link to submit an HTTP GET request to the servlet, and a form to submit an HTTP POST request. The form contains a text field called <code>name</code>, which is accessed by the servlet in its <code>doPost</code> method.</p> 
+      <p>The <code>index.html</code> page uses a link to submit an HTTP GET request to the servlet, and a form to submit an HTTP POST request. The form contains a text field called <code>name</code>, which is accessed by the servlet in its <code>doPost</code> method.</p> 
      </div> 
      <div class="paragraph"> 
       <p>In its <code>doPost</code> method, the servlet forwards control to another JSP page called <code>response.jsp</code>. Therefore define a file of that name inside <code>src/main/webapp</code> with the following contents:</p> 
      </div> 
      <div class="exampleblock"> 
       <div class="title">
-       Example 5. 
+       Example 4. 
        <code>src/main/webapp/response.jsp</code>
       </div> 
       <div class="content"> 
@@ -379,7 +348,7 @@ dependencies {
      </div> 
      <div class="exampleblock"> 
       <div class="title">
-       Example 6. Updating 
+       Example 5. Updating 
        <code>build.gradle</code> to add 
        <code>gretty</code>
       </div> 
@@ -410,7 +379,7 @@ dependencies {
      </div> 
      <div class="exampleblock"> 
       <div class="title">
-       Example 7. Executing the 
+       Example 6. Executing the 
        <code>appRun</code> task
       </div> 
       <div class="content"> 
@@ -452,14 +421,14 @@ BUILD SUCCESSFUL</pre>
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="test_the_servlet_using_mockito"><a class="anchor" href="#test_the_servlet_using_mockito"></a>Test the servlet using Mockito</h2> 
+    <h2 id="unit_test_the_servlet_using_mockito"><a class="anchor" href="#unit_test_the_servlet_using_mockito"></a>Unit test the servlet using Mockito</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
       <p>The open source <a href="http://site.mockito.org/">Mockito framework</a> makes it easy to unit test Java applications. Add the Mockito dependency to the <code>build.gradle</code> file under the <code>testCompile</code> configuration.</p> 
      </div> 
      <div class="exampleblock"> 
       <div class="title">
-       Example 8. Adding the Mockito library to 
+       Example 7. Adding the Mockito library to 
        <code>build.gradle</code>
       </div> 
       <div class="content"> 
@@ -487,11 +456,11 @@ dependencies {
       </div> 
      </div> 
      <div class="paragraph"> 
-      <p>To test the servlet, create a Java class called <code>org.gradle.demo.HelloServletTest</code> in the <code>src/test/java</code> directory, with the following contents:</p> 
+      <p>To unit test the servlet, create a Java class called <code>org.gradle.demo.HelloServletTest</code> in the <code>src/test/java</code> directory, with the following contents:</p> 
      </div> 
      <div class="exampleblock"> 
       <div class="title">
-       Example 9. 
+       Example 8. 
        <code>src/test/java/org/gradle/demo/HelloServletTest.java</code>
       </div> 
       <div class="content"> 
@@ -600,6 +569,186 @@ BUILD SUCCESSFUL</pre>
     </div> 
    </div> 
    <div class="sect1"> 
+    <h2 id="add_a_functional_test"><a class="anchor" href="#add_a_functional_test"></a>Add a functional test</h2> 
+    <div class="sectionbody"> 
+     <div class="paragraph"> 
+      <p>The <code>gretty</code> plugin combines with Gradle to make it easy to add functional tests to web applications. To do so, add the following lines to your <code>build.gradle</code> file:</p> 
+     </div> 
+     <div class="exampleblock"> 
+      <div class="title">
+       Example 9. Gretty additions to 
+       <code>build.gradle</code> for functional testing
+      </div> 
+      <div class="content"> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="CodeRay highlight"><code data-lang="groovy">gretty {  <i class="conum" data-value="1"></i><b>(1)</b>
+    integrationTestTask = <span class="string"><span class="delimiter">'</span><span class="content">intTest</span><span class="delimiter">'</span></span>
+}
+
+task intTest(<span class="key">type</span>: Test) {}
+
+<span class="comment">// ... rest from before ...</span>
+dependencies {
+    <span class="comment">// ... existing dependencies ...</span>
+    testCompile <span class="string"><span class="delimiter">'</span><span class="content">io.github.bonigarcia:webdrivermanager:1.6.1</span><span class="delimiter">'</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
+    testCompile <span class="string"><span class="delimiter">'</span><span class="content">org.seleniumhq.selenium:selenium-java:3.3.1</span><span class="delimiter">'</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre> 
+        </div> 
+       </div> 
+       <div class="colist arabic"> 
+        <table> 
+         <tbody>
+          <tr> 
+           <td><i class="conum" data-value="1"></i><b>1</b></td> 
+           <td>Tell gretty which task needs the server</td> 
+          </tr> 
+          <tr> 
+           <td><i class="conum" data-value="2"></i><b>2</b></td> 
+           <td>Automatically installs browser drivers</td> 
+          </tr> 
+          <tr> 
+           <td><i class="conum" data-value="3"></i><b>3</b></td> 
+           <td>Uses Selenium for functional tests</td> 
+          </tr> 
+         </tbody>
+        </table> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>The <code>gretty</code> plugin needs to know which task requires a start and stop of the server, and here that task is arbitrarily called <code>intTest</code>.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p><a href="http://www.seleniumhq.org">Selenium</a> is a popular open-source API for writing functional tests. Version 2.0 is based on the WebDriver API. Recent versions require testers to download and install a version of WebDriver for their browser, which can be tedious and hard to automate. The <a href="https://github.com/bonigarcia/webdrivermanager">WebDriverManager</a> project makes it easy to let Gradle handle that process for you.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>Add the following functional test to your project, in the <code>src/test/java</code> directory:</p> 
+     </div> 
+     <div class="exampleblock"> 
+      <div class="title">
+       Example 10. 
+       <code>src/test/java/org/gradle/demo/HelloServletFunctionalTest.java</code>
+      </div> 
+      <div class="content"> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.gradle.demo</span>;
+
+<span class="keyword">import</span> <span class="include">io.github.bonigarcia.wdm.ChromeDriverManager</span>;
+<span class="keyword">import</span> <span class="include">org.junit.After</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.BeforeClass</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+<span class="keyword">import</span> <span class="include">org.openqa.selenium.By</span>;
+<span class="keyword">import</span> <span class="include">org.openqa.selenium.WebDriver</span>;
+<span class="keyword">import</span> <span class="include">org.openqa.selenium.chrome.ChromeDriver</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert.assertEquals</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HelloServletFunctionalTest</span> {
+    <span class="directive">private</span> WebDriver driver;
+
+    <span class="annotation">@BeforeClass</span>
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> setupClass() {
+        ChromeDriverManager.getInstance().setup(); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+
+    <span class="annotation">@Before</span>
+    <span class="directive">public</span> <span class="type">void</span> setUp() {
+        driver = <span class="keyword">new</span> ChromeDriver();               <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+    <span class="annotation">@After</span>
+    <span class="directive">public</span> <span class="type">void</span> tearDown() {
+        <span class="keyword">if</span> (driver != <span class="predefined-constant">null</span>)
+            driver.quit();                         <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> sayHello() <span class="directive">throws</span> <span class="exception">Exception</span> {      <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="comment">// given</span>
+        driver.get(<span class="string"><span class="delimiter">"</span><span class="content">http://localhost:8080/webdemo</span><span class="delimiter">"</span></span>);
+
+        <span class="comment">// when</span>
+        driver.findElement(By.id(<span class="string"><span class="delimiter">"</span><span class="content">say-hello-text-input</span><span class="delimiter">"</span></span>)).sendKeys(<span class="string"><span class="delimiter">"</span><span class="content">Dolly</span><span class="delimiter">"</span></span>);
+        driver.findElement(By.id(<span class="string"><span class="delimiter">"</span><span class="content">say-hello-button</span><span class="delimiter">"</span></span>)).click();
+
+        <span class="comment">// then</span>
+        assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">Hello Page</span><span class="delimiter">"</span></span>, driver.getTitle());
+        assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">Hello, Dolly!</span><span class="delimiter">"</span></span>, driver.findElement(By.tagName(<span class="string"><span class="delimiter">"</span><span class="content">h2</span><span class="delimiter">"</span></span>)).getText());
+    }
+}</code></pre> 
+        </div> 
+       </div> 
+       <div class="colist arabic"> 
+        <table> 
+         <tbody>
+          <tr> 
+           <td><i class="conum" data-value="1"></i><b>1</b></td> 
+           <td>Downloads and installs browser driver, if necessary</td> 
+          </tr> 
+          <tr> 
+           <td><i class="conum" data-value="2"></i><b>2</b></td> 
+           <td>Start the browser automation</td> 
+          </tr> 
+          <tr> 
+           <td><i class="conum" data-value="3"></i><b>3</b></td> 
+           <td>Shut down the browser when done</td> 
+          </tr> 
+          <tr> 
+           <td><i class="conum" data-value="4"></i><b>4</b></td> 
+           <td>Run the functional test using the Selenium API</td> 
+          </tr> 
+         </tbody>
+        </table> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>The WebDriverManager portion of this test checks for the latest version of the binary, and downloads and installs it if it is not present. Then the <code>sayHello</code> test method drives a Chrome browser to the root of our application, fills in the input text field, clicks the button, and verifies the title of the destination page and that the <code>h2</code> tag contains the expected string.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>The WebDriverManager system supports Chrome, Opera, Internet Explorer, Microsoft Edge, PhantomJS, and Firefox. Check the project documentation for more details.</p> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
+    <h2 id="run_the_functional_test"><a class="anchor" href="#run_the_functional_test"></a>Run the functional test</h2> 
+    <div class="sectionbody"> 
+     <div class="paragraph"> 
+      <p>Run the test using the <code>intTest</code> task:</p> 
+     </div> 
+     <div class="listingblock"> 
+      <div class="content"> 
+       <pre>&gt; ./gradlew intTest
+:prepareInplaceWebAppFolder UP-TO-DATE
+:createInplaceWebAppFolder UP-TO-DATE
+:compileJava
+:processResources UP-TO-DATE
+:classes
+:prepareInplaceWebAppClasses
+:prepareInplaceWebApp
+:compileTestJava
+:processTestResources UP-TO-DATE
+:testClasses
+:appBeforeIntegrationTest
+16:38:33 INFO  Jetty 9.2.15.v20160210 started and listening on port 8080
+16:38:33 INFO  webdemo runs at:
+16:38:33 INFO    http://localhost:8080/webdemo
+:intTest
+:appAfterIntegrationTest
+Server stopped.
+
+BUILD SUCCESSFUL</pre> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>The <code>gretty</code> plugin starts up an embedded version of Jetty 9 on the default port, executes the tests, and shuts down the server. If you watch, you’ll see the Selenium system open a new browser, access the site, complete the form, click the button, check the new page, and finally shut down the browser.</p> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
     <h2 id="summary"><a class="anchor" href="#summary"></a>Summary</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
@@ -610,7 +759,8 @@ BUILD SUCCESSFUL</pre>
        <li> <p>Use the <code>war</code> plugin in Gradle builds to define a web application</p> </li> 
        <li> <p>Add a servlet and JSP pages to a web app</p> </li> 
        <li> <p>Use the <code>gretty</code> plugin to deploy the application</p> </li> 
-       <li> <p>Test a servlet using the Mockito framework</p> </li> 
+       <li> <p>Unit test a servlet using the Mockito framework</p> </li> 
+       <li> <p>Functionally test the web app using <code>gretty</code> and Selenium</p> </li> 
       </ul> 
      </div> 
     </div> 
@@ -619,14 +769,17 @@ BUILD SUCCESSFUL</pre>
     <h2 id="next_steps"><a class="anchor" href="#next_steps"></a>Next steps</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
-      <p>Gretty can be used to do integration tests, deploy to clusters, and more. See the documentation at <a href="http://akhikhl.github.io/gretty-doc/" class="bare">http://akhikhl.github.io/gretty-doc/</a> for details.</p> 
+      <p>Gretty is a very powerful API. See the documentation at <a href="http://akhikhl.github.io/gretty-doc/" class="bare">http://akhikhl.github.io/gretty-doc/</a> for details. Further details about Selenium can be found at <a href="http://www.seleniumhq.org" class="bare">http://www.seleniumhq.org</a>, and more about the WebDriverManager system is available at <a href="https://github.com/bonigarcia/webdrivermanager" class="bare">https://github.com/bonigarcia/webdrivermanager</a> .</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>If you are interested in functional testing, check out the open source <a href="http://www.gebish.org">Geb</a> library, which provides a powerful Groovy DSL for browser automation that rests on top of Selenium and WebDriver.</p> 
      </div> 
     </div> 
    </div> 
   </div> 
   <div id="footer"> 
    <div id="footer-text">
-     Last updated 2017-03-24 22:18:06 UTC 
+     Last updated 2017-03-27 20:51:33 UTC 
    </div> 
   </div>  
  </body>

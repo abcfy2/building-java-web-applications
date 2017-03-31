@@ -90,7 +90,7 @@
     <h2 id="create_the_structure_of_a_web_application"><a class="anchor" href="#create_the_structure_of_a_web_application"></a>Create the structure of a web application</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
-      <p>Gradle includes a <code>war</code> plugin that is documented in the <a href="https://docs.gradle.org/3.3/userguide/web_project_tutorial.html">Web Application Quickstart</a> and the <a href="https://docs.gradle.org/3.3/userguide/war_plugin.html" class="bare">https://docs.gradle.org/3.3/userguide/war_plugin.html</a> chapters of the user manual. The <code>war</code> plugin extends the Java plugin to add support for web applications. By default, it uses a folder called <code>src/main/webapp</code> for web-related resources.</p> 
+      <p>Gradle includes a <code>war</code> plugin that is documented in the <a href="https://docs.gradle.org/3.3/userguide/web_project_tutorial.html">Web Application Quickstart</a> and the <a href="https://docs.gradle.org/3.3/userguide/war_plugin.html">WAR plugin chapter</a> of the user manual. The <code>war</code> plugin extends the Java plugin to add support for web applications. By default, it uses a folder called <code>src/main/webapp</code> for web-related resources.</p> 
      </div> 
      <div class="paragraph"> 
       <p>Therefore, create the following file structure for a project called <code>webdemo</code>:</p> 
@@ -120,14 +120,12 @@
      <div class="paragraph"> 
       <p>Add a file called <code>build.gradle</code> to the root of the project, with the following contents:</p> 
      </div> 
-     <div class="exampleblock"> 
+     <div class="listingblock"> 
       <div class="title">
-       Example 1. build.gradle
+       build.gradle
       </div> 
       <div class="content"> 
-       <div class="listingblock"> 
-        <div class="content"> 
-         <pre class="CodeRay highlight"><code data-lang="groovy">plugins {
+       <pre class="CodeRay highlight"><code data-lang="groovy">plugins {
     id <span class="string"><span class="delimiter">'</span><span class="content">java</span><span class="delimiter">'</span></span>
     id <span class="string"><span class="delimiter">'</span><span class="content">war</span><span class="delimiter">'</span></span>  <i class="conum" data-value="1"></i><b>(1)</b>
 }
@@ -140,23 +138,21 @@ dependencies {
     providedCompile <span class="string"><span class="delimiter">'</span><span class="content">javax.servlet:javax.servlet-api:3.1.0</span><span class="delimiter">'</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
     testCompile <span class="string"><span class="delimiter">'</span><span class="content">junit:junit:4.12</span><span class="delimiter">'</span></span>
 }</code></pre> 
-        </div> 
-       </div> 
-       <div class="colist arabic"> 
-        <table> 
-         <tbody>
-          <tr> 
-           <td><i class="conum" data-value="1"></i><b>1</b></td> 
-           <td>Using the <code>war</code> plugin</td> 
-          </tr> 
-          <tr> 
-           <td><i class="conum" data-value="2"></i><b>2</b></td> 
-           <td>Current release version of the servlet API</td> 
-          </tr> 
-         </tbody>
-        </table> 
-       </div> 
       </div> 
+     </div> 
+     <div class="colist arabic"> 
+      <table> 
+       <tbody>
+        <tr> 
+         <td><i class="conum" data-value="1"></i><b>1</b></td> 
+         <td>Using the <code>war</code> plugin</td> 
+        </tr> 
+        <tr> 
+         <td><i class="conum" data-value="2"></i><b>2</b></td> 
+         <td>Current release version of the servlet API</td> 
+        </tr> 
+       </tbody>
+      </table> 
      </div> 
      <div class="paragraph"> 
       <p>The <code>war</code> plugin adds the configurations <code>providedCompile</code> and <code>providedRuntime</code>, analogous to <code>compile</code> and <code>runtime</code> in regular Java applications, to represent dependencies that are needed locally but should not be added to the generated <code>webdemo.war</code> file.</p> 
@@ -174,7 +170,7 @@ dependencies {
       </div> 
      </div> 
      <div class="paragraph"> 
-      <p>This will produce <code>gradlew</code> and <code>gradlew.bat</code> scripts and the <code>gradle</code> folder with the wrapper jar inside as described in the <a href="https://docs.gradle.org/3.3/userguide/gradle_wrapper.html" class="bare">https://docs.gradle.org/3.3/userguide/gradle_wrapper.html</a> section of the User Manual.</p> 
+      <p>This will produce <code>gradlew</code> and <code>gradlew.bat</code> scripts and the <code>gradle</code> folder with the wrapper jar inside as described in the <a href="https://docs.gradle.org/3.3/userguide/gradle_wrapper.html">wrapper section</a> of the User Manual.</p> 
      </div> 
     </div> 
    </div> 
@@ -187,15 +183,12 @@ dependencies {
      <div class="paragraph"> 
       <p>Add a servlet called <code>org.gradle.demo.HelloServlet</code> to the <code>src/main/java</code> folder, in package structure, with the following contents:</p> 
      </div> 
-     <div class="exampleblock"> 
+     <div class="listingblock"> 
       <div class="title">
-       Example 2. 
-       <code>src/main/java/com/gradle/demo/HelloServlet.java</code>
+       src/main/java/com/gradle/demo/HelloServlet.java
       </div> 
       <div class="content"> 
-       <div class="listingblock"> 
-        <div class="content"> 
-         <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.gradle.demo</span>;
+       <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.gradle.demo</span>;
 
 <span class="keyword">import</span> <span class="include">javax.servlet.ServletException</span>;
 <span class="keyword">import</span> <span class="include">javax.servlet.annotation.WebServlet</span>;
@@ -219,27 +212,25 @@ dependencies {
         request.getRequestDispatcher(<span class="string"><span class="delimiter">"</span><span class="content">response.jsp</span><span class="delimiter">"</span></span>).forward(request, response); <i class="conum" data-value="3"></i><b>(3)</b>
     }
 }</code></pre> 
-        </div> 
-       </div> 
-       <div class="colist arabic"> 
-        <table> 
-         <tbody>
-          <tr> 
-           <td><i class="conum" data-value="1"></i><b>1</b></td> 
-           <td>Annotation-based servlet</td> 
-          </tr> 
-          <tr> 
-           <td><i class="conum" data-value="2"></i><b>2</b></td> 
-           <td>GET request returns a simple string</td> 
-          </tr> 
-          <tr> 
-           <td><i class="conum" data-value="3"></i><b>3</b></td> 
-           <td>POST request forwards to a JSP page</td> 
-          </tr> 
-         </tbody>
-        </table> 
-       </div> 
       </div> 
+     </div> 
+     <div class="colist arabic"> 
+      <table> 
+       <tbody>
+        <tr> 
+         <td><i class="conum" data-value="1"></i><b>1</b></td> 
+         <td>Annotation-based servlet</td> 
+        </tr> 
+        <tr> 
+         <td><i class="conum" data-value="2"></i><b>2</b></td> 
+         <td>GET request returns a simple string</td> 
+        </tr> 
+        <tr> 
+         <td><i class="conum" data-value="3"></i><b>3</b></td> 
+         <td>POST request forwards to a JSP page</td> 
+        </tr> 
+       </tbody>
+      </table> 
      </div> 
      <div class="paragraph"> 
       <p>The servlet uses the <code>@WebServlet</code> annotation for configuration. The <code>doGet</code> method responds to HTTP GET requests by writing a "Hello, World!" string to the output writer. It reacts to HTTP POST requests by looking for a request parameter called <code>name</code> and adding it to the <code>request</code> as an attribute called <code>user</code>, then forwarding to a <code>response.jsp</code> page.</p> 
@@ -265,15 +256,12 @@ dependencies {
      <div class="paragraph"> 
       <p>Add an index page to the root of the application by creating the file <code>index.html</code> in the <code>src/main/webapp</code> folder, with the following contents:</p> 
      </div> 
-     <div class="exampleblock"> 
+     <div class="listingblock"> 
       <div class="title">
-       Example 3. 
-       <code>src/main/webapp/index.html</code>
+       src/main/webapp/index.html
       </div> 
       <div class="content"> 
-       <div class="listingblock"> 
-        <div class="content"> 
-         <pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;html&gt;</span>
+       <pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;html&gt;</span>
     <span class="tag">&lt;head&gt;</span>
         <span class="tag">&lt;title&gt;</span>Web Demo<span class="tag">&lt;/title&gt;</span>
     <span class="tag">&lt;/head&gt;</span>
@@ -287,23 +275,21 @@ dependencies {
         <span class="tag">&lt;/form&gt;</span>
     <span class="tag">&lt;/body&gt;</span>
 <span class="tag">&lt;/html&gt;</span></code></pre> 
-        </div> 
-       </div> 
-       <div class="colist arabic"> 
-        <table> 
-         <tbody>
-          <tr> 
-           <td><i class="conum" data-value="1"></i><b>1</b></td> 
-           <td>Link submits GET request</td> 
-          </tr> 
-          <tr> 
-           <td><i class="conum" data-value="2"></i><b>2</b></td> 
-           <td>Form uses POST request</td> 
-          </tr> 
-         </tbody>
-        </table> 
-       </div> 
       </div> 
+     </div> 
+     <div class="colist arabic"> 
+      <table> 
+       <tbody>
+        <tr> 
+         <td><i class="conum" data-value="1"></i><b>1</b></td> 
+         <td>Link submits GET request</td> 
+        </tr> 
+        <tr> 
+         <td><i class="conum" data-value="2"></i><b>2</b></td> 
+         <td>Form uses POST request</td> 
+        </tr> 
+       </tbody>
+      </table> 
      </div> 
      <div class="paragraph"> 
       <p>The <code>index.html</code> page uses a link to submit an HTTP GET request to the servlet, and a form to submit an HTTP POST request. The form contains a text field called <code>name</code>, which is accessed by the servlet in its <code>doPost</code> method.</p> 
@@ -311,15 +297,12 @@ dependencies {
      <div class="paragraph"> 
       <p>In its <code>doPost</code> method, the servlet forwards control to another JSP page called <code>response.jsp</code>. Therefore define a file of that name inside <code>src/main/webapp</code> with the following contents:</p> 
      </div> 
-     <div class="exampleblock"> 
+     <div class="listingblock"> 
       <div class="title">
-       Example 4. 
-       <code>src/main/webapp/response.jsp</code>
+       src/main/webapp/response.jsp
       </div> 
       <div class="content"> 
-       <div class="listingblock"> 
-        <div class="content"> 
-         <pre class="CodeRay highlight"><code data-lang="html"><span class="error">&lt;</span>%@ page contentType="text/html;charset=UTF-8" language="java" %<span class="error">&gt;</span>
+       <pre class="CodeRay highlight"><code data-lang="html"><span class="error">&lt;</span>%@ page contentType="text/html;charset=UTF-8" language="java" %<span class="error">&gt;</span>
 <span class="tag">&lt;html&gt;</span>
     <span class="tag">&lt;head&gt;</span>
         <span class="tag">&lt;title&gt;</span>Hello Page<span class="tag">&lt;/title&gt;</span>
@@ -328,8 +311,6 @@ dependencies {
         <span class="tag">&lt;h2&gt;</span>Hello, ${user}!<span class="tag">&lt;/h2&gt;</span>
     <span class="tag">&lt;/body&gt;</span>
 <span class="tag">&lt;/html&gt;</span></code></pre> 
-        </div> 
-       </div> 
       </div> 
      </div> 
      <div class="paragraph"> 
@@ -346,46 +327,40 @@ dependencies {
      <div class="paragraph"> 
       <p>Add it to our project by adding the following line to the <code>plugins</code> block inside <code>build.gradle</code>.</p> 
      </div> 
-     <div class="exampleblock"> 
+     <div class="listingblock"> 
       <div class="title">
-       Example 5. Updating 
+       Updating 
        <code>build.gradle</code> to add 
        <code>gretty</code>
       </div> 
       <div class="content"> 
-       <div class="listingblock"> 
-        <div class="content"> 
-         <pre class="CodeRay highlight"><code data-lang="groovy">plugins {
+       <pre class="CodeRay highlight"><code data-lang="groovy">plugins {
     id <span class="string"><span class="delimiter">'</span><span class="content">java</span><span class="delimiter">'</span></span>
     id <span class="string"><span class="delimiter">'</span><span class="content">war</span><span class="delimiter">'</span></span>
     id <span class="string"><span class="delimiter">'</span><span class="content">org.akhikhl.gretty</span><span class="delimiter">'</span></span> version <span class="string"><span class="delimiter">'</span><span class="content">1.4.2</span><span class="delimiter">'</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
 }</code></pre> 
-        </div> 
-       </div> 
-       <div class="colist arabic"> 
-        <table> 
-         <tbody>
-          <tr> 
-           <td><i class="conum" data-value="1"></i><b>1</b></td> 
-           <td>Adding the <code>gretty</code> plugin</td> 
-          </tr> 
-         </tbody>
-        </table> 
-       </div> 
       </div> 
+     </div> 
+     <div class="colist arabic"> 
+      <table> 
+       <tbody>
+        <tr> 
+         <td><i class="conum" data-value="1"></i><b>1</b></td> 
+         <td>Adding the <code>gretty</code> plugin</td> 
+        </tr> 
+       </tbody>
+      </table> 
      </div> 
      <div class="paragraph"> 
       <p>The <code>gretty</code> plugin adds a large number of tasks to the application, useful for running or testing in Jetty or Tomcat environments. Now you can build and deploy the app to the default (Jetty) container by using the <code>appRun</code> task.</p> 
      </div> 
-     <div class="exampleblock"> 
+     <div class="listingblock"> 
       <div class="title">
-       Example 6. Executing the 
+       Executing the 
        <code>appRun</code> task
       </div> 
       <div class="content"> 
-       <div class="listingblock"> 
-        <div class="content"> 
-         <pre>&gt; ./gradlew appRun
+       <pre>&gt; ./gradlew appRun
 :prepareInplaceWebAppFolder
 :createInplaceWebAppFolder UP-TO-DATE
 :compileJava
@@ -401,19 +376,17 @@ Press any key to stop the server. <i class="conum" data-value="1"></i><b>(1)</b>
 &gt; Building 87% &gt; :appRun
 
 BUILD SUCCESSFUL</pre> 
-        </div> 
-       </div> 
-       <div class="colist arabic"> 
-        <table> 
-         <tbody>
-          <tr> 
-           <td><i class="conum" data-value="1"></i><b>1</b></td> 
-           <td>Waits for any keypress</td> 
-          </tr> 
-         </tbody>
-        </table> 
-       </div> 
       </div> 
+     </div> 
+     <div class="colist arabic"> 
+      <table> 
+       <tbody>
+        <tr> 
+         <td><i class="conum" data-value="1"></i><b>1</b></td> 
+         <td>Waits for any keypress</td> 
+        </tr> 
+       </tbody>
+      </table> 
      </div> 
      <div class="paragraph"> 
       <p>You can now access the web app at <a href="http://localhost:8080/webdemo" class="bare">http://localhost:8080/webdemo</a> and either click on the link to execute a GET request or submit the form to execute a POST request.</p> 
@@ -426,47 +399,40 @@ BUILD SUCCESSFUL</pre>
      <div class="paragraph"> 
       <p>The open source <a href="http://site.mockito.org/">Mockito framework</a> makes it easy to unit test Java applications. Add the Mockito dependency to the <code>build.gradle</code> file under the <code>testCompile</code> configuration.</p> 
      </div> 
-     <div class="exampleblock"> 
+     <div class="listingblock"> 
       <div class="title">
-       Example 7. Adding the Mockito library to 
+       Adding the Mockito library to 
        <code>build.gradle</code>
       </div> 
       <div class="content"> 
-       <div class="listingblock"> 
-        <div class="content"> 
-         <pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">// ... from earlier ...</span>
+       <pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">// ... from earlier ...</span>
 
 dependencies {
     providedCompile <span class="string"><span class="delimiter">'</span><span class="content">javax.servlet:javax.servlet-api:3.1.0</span><span class="delimiter">'</span></span>
     testCompile <span class="string"><span class="delimiter">'</span><span class="content">junit:junit:4.12</span><span class="delimiter">'</span></span>
     testCompile <span class="string"><span class="delimiter">'</span><span class="content">org.mockito:mockito-core:2.7.19</span><span class="delimiter">'</span></span>  <i class="conum" data-value="1"></i><b>(1)</b>
 }</code></pre> 
-        </div> 
-       </div> 
-       <div class="colist arabic"> 
-        <table> 
-         <tbody>
-          <tr> 
-           <td><i class="conum" data-value="1"></i><b>1</b></td> 
-           <td>Adding Mockito</td> 
-          </tr> 
-         </tbody>
-        </table> 
-       </div> 
       </div> 
+     </div> 
+     <div class="colist arabic"> 
+      <table> 
+       <tbody>
+        <tr> 
+         <td><i class="conum" data-value="1"></i><b>1</b></td> 
+         <td>Adding Mockito</td> 
+        </tr> 
+       </tbody>
+      </table> 
      </div> 
      <div class="paragraph"> 
       <p>To unit test the servlet, create a Java class called <code>org.gradle.demo.HelloServletTest</code> in the <code>src/test/java</code> directory, with the following contents:</p> 
      </div> 
-     <div class="exampleblock"> 
+     <div class="listingblock"> 
       <div class="title">
-       Example 8. 
-       <code>src/test/java/org/gradle/demo/HelloServletTest.java</code>
+       src/test/java/org/gradle/demo/HelloServletTest.java
       </div> 
       <div class="content"> 
-       <div class="listingblock"> 
-        <div class="content"> 
-         <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.gradle.demo</span>;
+       <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.gradle.demo</span>;
 
 <span class="keyword">import</span> <span class="include">org.junit.Before</span>;
 <span class="keyword">import</span> <span class="include">org.junit.Test</span>;
@@ -527,8 +493,6 @@ dependencies {
         verify(requestDispatcher).forward(request,response);
     }
 }</code></pre> 
-        </div> 
-       </div> 
       </div> 
      </div> 
      <div class="paragraph"> 
@@ -574,15 +538,13 @@ BUILD SUCCESSFUL</pre>
      <div class="paragraph"> 
       <p>The <code>gretty</code> plugin combines with Gradle to make it easy to add functional tests to web applications. To do so, add the following lines to your <code>build.gradle</code> file:</p> 
      </div> 
-     <div class="exampleblock"> 
+     <div class="listingblock"> 
       <div class="title">
-       Example 9. Gretty additions to 
+       Gretty additions to 
        <code>build.gradle</code> for functional testing
       </div> 
       <div class="content"> 
-       <div class="listingblock"> 
-        <div class="content"> 
-         <pre class="CodeRay highlight"><code data-lang="groovy">gretty {  <i class="conum" data-value="1"></i><b>(1)</b>
+       <pre class="CodeRay highlight"><code data-lang="groovy">gretty {  <i class="conum" data-value="1"></i><b>(1)</b>
     integrationTestTask = <span class="string"><span class="delimiter">'</span><span class="content">intTest</span><span class="delimiter">'</span></span>
 }
 
@@ -594,27 +556,25 @@ dependencies {
     testCompile <span class="string"><span class="delimiter">'</span><span class="content">io.github.bonigarcia:webdrivermanager:1.6.1</span><span class="delimiter">'</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
     testCompile <span class="string"><span class="delimiter">'</span><span class="content">org.seleniumhq.selenium:selenium-java:3.3.1</span><span class="delimiter">'</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
 }</code></pre> 
-        </div> 
-       </div> 
-       <div class="colist arabic"> 
-        <table> 
-         <tbody>
-          <tr> 
-           <td><i class="conum" data-value="1"></i><b>1</b></td> 
-           <td>Tell gretty which task needs the server</td> 
-          </tr> 
-          <tr> 
-           <td><i class="conum" data-value="2"></i><b>2</b></td> 
-           <td>Automatically installs browser drivers</td> 
-          </tr> 
-          <tr> 
-           <td><i class="conum" data-value="3"></i><b>3</b></td> 
-           <td>Uses Selenium for functional tests</td> 
-          </tr> 
-         </tbody>
-        </table> 
-       </div> 
       </div> 
+     </div> 
+     <div class="colist arabic"> 
+      <table> 
+       <tbody>
+        <tr> 
+         <td><i class="conum" data-value="1"></i><b>1</b></td> 
+         <td>Tell gretty which task needs the server</td> 
+        </tr> 
+        <tr> 
+         <td><i class="conum" data-value="2"></i><b>2</b></td> 
+         <td>Automatically installs browser drivers</td> 
+        </tr> 
+        <tr> 
+         <td><i class="conum" data-value="3"></i><b>3</b></td> 
+         <td>Uses Selenium for functional tests</td> 
+        </tr> 
+       </tbody>
+      </table> 
      </div> 
      <div class="paragraph"> 
       <p>The <code>gretty</code> plugin needs to know which task requires a start and stop of the server, and here that task is arbitrarily called <code>intTest</code>.</p> 
@@ -625,15 +585,12 @@ dependencies {
      <div class="paragraph"> 
       <p>Add the following functional test to your project, in the <code>src/test/java</code> directory:</p> 
      </div> 
-     <div class="exampleblock"> 
+     <div class="listingblock"> 
       <div class="title">
-       Example 10. 
-       <code>src/test/java/org/gradle/demo/HelloServletFunctionalTest.java</code>
+       src/test/java/org/gradle/demo/HelloServletFunctionalTest.java
       </div> 
       <div class="content"> 
-       <div class="listingblock"> 
-        <div class="content"> 
-         <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.gradle.demo</span>;
+       <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.gradle.demo</span>;
 
 <span class="keyword">import</span> <span class="include">io.github.bonigarcia.wdm.ChromeDriverManager</span>;
 <span class="keyword">import</span> <span class="include">org.junit.After</span>;
@@ -679,31 +636,29 @@ dependencies {
         assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">Hello, Dolly!</span><span class="delimiter">"</span></span>, driver.findElement(By.tagName(<span class="string"><span class="delimiter">"</span><span class="content">h2</span><span class="delimiter">"</span></span>)).getText());
     }
 }</code></pre> 
-        </div> 
-       </div> 
-       <div class="colist arabic"> 
-        <table> 
-         <tbody>
-          <tr> 
-           <td><i class="conum" data-value="1"></i><b>1</b></td> 
-           <td>Downloads and installs browser driver, if necessary</td> 
-          </tr> 
-          <tr> 
-           <td><i class="conum" data-value="2"></i><b>2</b></td> 
-           <td>Start the browser automation</td> 
-          </tr> 
-          <tr> 
-           <td><i class="conum" data-value="3"></i><b>3</b></td> 
-           <td>Shut down the browser when done</td> 
-          </tr> 
-          <tr> 
-           <td><i class="conum" data-value="4"></i><b>4</b></td> 
-           <td>Run the functional test using the Selenium API</td> 
-          </tr> 
-         </tbody>
-        </table> 
-       </div> 
       </div> 
+     </div> 
+     <div class="colist arabic"> 
+      <table> 
+       <tbody>
+        <tr> 
+         <td><i class="conum" data-value="1"></i><b>1</b></td> 
+         <td>Downloads and installs browser driver, if necessary</td> 
+        </tr> 
+        <tr> 
+         <td><i class="conum" data-value="2"></i><b>2</b></td> 
+         <td>Start the browser automation</td> 
+        </tr> 
+        <tr> 
+         <td><i class="conum" data-value="3"></i><b>3</b></td> 
+         <td>Shut down the browser when done</td> 
+        </tr> 
+        <tr> 
+         <td><i class="conum" data-value="4"></i><b>4</b></td> 
+         <td>Run the functional test using the Selenium API</td> 
+        </tr> 
+       </tbody>
+      </table> 
      </div> 
      <div class="paragraph"> 
       <p>The WebDriverManager portion of this test checks for the latest version of the binary, and downloads and installs it if it is not present. Then the <code>sayHello</code> test method drives a Chrome browser to the root of our application, fills in the input text field, clicks the button, and verifies the title of the destination page and that the <code>h2</code> tag contains the expected string.</p> 
@@ -754,7 +709,7 @@ BUILD SUCCESSFUL</pre>
      </div> 
      <div class="exampleblock"> 
       <div class="title">
-       Example 11. Make gretty start the server on tests
+       Example 1. Make gretty start the server on tests
       </div> 
       <div class="content"> 
        <div class="listingblock"> 
@@ -810,7 +765,7 @@ BUILD SUCCESSFUL</pre>
     <h2 id="next_steps"><a class="anchor" href="#next_steps"></a>Next steps</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
-      <p>Gretty is a very powerful API. See the documentation at <a href="http://akhikhl.github.io/gretty-doc/" class="bare">http://akhikhl.github.io/gretty-doc/</a> for details. Further details about Selenium can be found at <a href="http://www.seleniumhq.org" class="bare">http://www.seleniumhq.org</a>, and more about the WebDriverManager system is available at <a href="https://github.com/bonigarcia/webdrivermanager" class="bare">https://github.com/bonigarcia/webdrivermanager</a> .</p> 
+      <p>Gretty is a very powerful API. See the <a href="http://akhikhl.github.io/gretty-doc/">Gretty documentation</a> for details. Further details about Selenium can be found on the <a href="http://www.seleniumhq.org">Selenium website</a>, and more about WebDriverManager system is available on the <a href="https://github.com/bonigarcia/webdrivermanager">WebdriverDriverManager GitHub repository</a>.</p> 
      </div> 
      <div class="paragraph"> 
       <p>If you are interested in functional testing, check out the open source <a href="http://www.gebish.org">Geb</a> library, which provides a powerful Groovy DSL for browser automation that rests on top of Selenium and WebDriver.</p> 
@@ -820,7 +775,7 @@ BUILD SUCCESSFUL</pre>
   </div> 
   <div id="footer"> 
    <div id="footer-text">
-     Last updated 2017-03-31 16:44:40 UTC 
+     Last updated 2017-03-31 16:46:42 UTC 
    </div> 
   </div>  
  </body>

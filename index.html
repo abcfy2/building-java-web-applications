@@ -746,6 +746,47 @@ BUILD SUCCESSFUL</pre>
      <div class="paragraph"> 
       <p>The <code>gretty</code> plugin starts up an embedded version of Jetty 9 on the default port, executes the tests, and shuts down the server. If you watch, you’ll see the Selenium system open a new browser, access the site, complete the form, click the button, check the new page, and finally shut down the browser.</p> 
      </div> 
+     <div class="paragraph"> 
+      <p>There is one remaining problem. If you simply run the <code>test</code> task, the server does not start and the integration test therefore fails. This can be fixed in a variety of ways, but the easiest is to tell <code>gretty</code> to start the server whenever you run tests.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>Change the <code>build.gradle</code> file to be:</p> 
+     </div> 
+     <div class="exampleblock"> 
+      <div class="title">
+       Example 11. Make gretty start the server on tests
+      </div> 
+      <div class="content"> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="CodeRay highlight"><code data-lang="groovy">gretty {
+    integrationTestTask = <span class="string"><span class="delimiter">'</span><span class="content">test</span><span class="delimiter">'</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+<span class="comment">// task intTest(type: Test) {} </span><i class="conum" data-value="2"></i><b>(2)</b>
+
+<span class="comment">// ... rest from before ...</span></code></pre> 
+        </div> 
+       </div> 
+       <div class="colist arabic"> 
+        <table> 
+         <tbody>
+          <tr> 
+           <td><i class="conum" data-value="1"></i><b>1</b></td> 
+           <td>Start server on all tests</td> 
+          </tr> 
+          <tr> 
+           <td><i class="conum" data-value="2"></i><b>2</b></td> 
+           <td>No longer need separate task</td> 
+          </tr> 
+         </tbody>
+        </table> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="paragraph"> 
+      <p>Integration tests are often handled by creating a separate source set and dedicated tasks, but that is beyond the scope of this guide. See the gretty documentation for details.</p> 
+     </div> 
     </div> 
    </div> 
    <div class="sect1"> 
@@ -779,7 +820,7 @@ BUILD SUCCESSFUL</pre>
   </div> 
   <div id="footer"> 
    <div id="footer-text">
-     Last updated 2017-03-27 20:51:33 UTC 
+     Last updated 2017-03-31 16:44:40 UTC 
    </div> 
   </div>  
  </body>

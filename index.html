@@ -61,7 +61,7 @@
     <h2 id="introduction"><a class="anchor" href="#introduction"></a>Introduction</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
-      <p>Gradle includes a <code>war</code> plugin for building Java web applications, and the community supplies an excellent plugin called <code>gretty</code> for testing and deploying web applications on Jetty or Tomcat. This guide demonstrates how to build a simple web app, deploy it on Jetty, and test it using Mockito.</p> 
+      <p>Gradle includes a <code>war</code> plugin for building Java web applications, and the community supplies an excellent plugin called <code>gretty</code> for testing and deploying web applications on Jetty or Tomcat. This guide demonstrates how to build a simple web app and deploy it on Jetty. You’ll also learn how to write a unit test for a servlet using the Mockito framework and how to write a functional test for the web app using <code>gretty</code> and Selenium.</p> 
      </div> 
     </div> 
    </div> 
@@ -69,7 +69,7 @@
     <h2 id="what_you_ll_build"><a class="anchor" href="#what_you_ll_build"></a>What you’ll build</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
-      <p>You will create a web application in the default Gradle structure, add dependencies for the Servlet API and the Mockito testing framework, add the <code>gretty</code> plugin, then build and test the application.</p> 
+      <p>You will create a web application in the default Gradle structure, add dependencies for the Servlet API, add the <code>gretty</code> plugin, then build and test the application.</p> 
      </div> 
     </div> 
    </div> 
@@ -91,6 +91,16 @@
     <div class="sectionbody"> 
      <div class="paragraph"> 
       <p>Gradle includes a <code>war</code> plugin that is documented in the <a href="https://docs.gradle.org/3.3/userguide/web_project_tutorial.html">Web Application Quickstart</a> and the <a href="https://docs.gradle.org/3.3/userguide/war_plugin.html">WAR plugin chapter</a> of the user manual. The <code>war</code> plugin extends the Java plugin to add support for web applications. By default, it uses a folder called <code>src/main/webapp</code> for web-related resources.</p> 
+     </div> 
+     <div class="admonitionblock note"> 
+      <table> 
+       <tbody>
+        <tr> 
+         <td class="icon"> <i class="fa icon-note" title="Note"></i> </td> 
+         <td class="content"> The "Web Application Quickstart" section in the User Manual still refers to the <code>jetty</code> plugin, which is deprecated in favor of the <code>gretty</code> plugin used here. The parts specific to the <code>war</code> plugin are fine, however, and the section will be updated soon. </td> 
+        </tr> 
+       </tbody>
+      </table> 
      </div> 
      <div class="paragraph"> 
       <p>Therefore, create the following file structure for a project called <code>webdemo</code>:</p> 
@@ -418,7 +428,7 @@ dependencies {
       </table> 
      </div> 
      <div class="paragraph"> 
-      <p>To unit test the servlet, create a package folder <code>org.gradle.demo</code> beneath <code>src.test/java</code>. Add a test class file <code>HelloServletTest.java</code> with the following contents:</p> 
+      <p>To unit test the servlet, create a package folder <code>org.gradle.demo</code> beneath <code>src/test/java</code>. Add a test class file <code>HelloServletTest.java</code> with the following contents:</p> 
      </div> 
      <div class="listingblock"> 
       <div class="title">
@@ -537,11 +547,9 @@ BUILD SUCCESSFUL</pre>
        <code>build.gradle</code> for functional testing
       </div> 
       <div class="content"> 
-       <pre class="CodeRay highlight"><code data-lang="groovy">gretty {  <i class="conum" data-value="1"></i><b>(1)</b>
-    integrationTestTask = <span class="string"><span class="delimiter">'</span><span class="content">intTest</span><span class="delimiter">'</span></span>
+       <pre class="CodeRay highlight"><code data-lang="groovy">gretty {
+    integrationTestTask = <span class="string"><span class="delimiter">'</span><span class="content">test</span><span class="delimiter">'</span></span>  <i class="conum" data-value="1"></i><b>(1)</b>
 }
-
-task intTest(<span class="key">type</span>: Test) {}
 
 <span class="comment">// ... rest from before ...</span>
 dependencies {
@@ -556,7 +564,7 @@ dependencies {
        <tbody>
         <tr> 
          <td><i class="conum" data-value="1"></i><b>1</b></td> 
-         <td>Tell gretty which task needs the server</td> 
+         <td>Tell gretty to start and stop the server on test</td> 
         </tr> 
         <tr> 
          <td><i class="conum" data-value="2"></i><b>2</b></td> 
@@ -570,7 +578,7 @@ dependencies {
       </table> 
      </div> 
      <div class="paragraph"> 
-      <p>The <code>gretty</code> plugin needs to know which task requires a start and stop of the server, and here that task is arbitrarily called <code>intTest</code>.</p> 
+      <p>The <code>gretty</code> plugin needs to know which task requires a start and stop of the server. Frequently that is assigned to your own task, but to keep things simple just use the existing <code>test</code> task.</p> 
      </div> 
      <div class="paragraph"> 
       <p><a href="http://www.seleniumhq.org">Selenium</a> is a popular open-source API for writing functional tests. Version 2.0 is based on the WebDriver API. Recent versions require testers to download and install a version of WebDriver for their browser, which can be tedious and hard to automate. The <a href="https://github.com/bonigarcia/webdrivermanager">WebDriverManager</a> project makes it easy to let Gradle handle that process for you.</p> 
@@ -662,26 +670,26 @@ dependencies {
     <h2 id="run_the_functional_test"><a class="anchor" href="#run_the_functional_test"></a>Run the functional test</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
-      <p>Run the test using the <code>intTest</code> task:</p> 
+      <p>Run the test using the <code>test</code> task:</p> 
      </div> 
      <div class="listingblock"> 
       <div class="content"> 
-       <pre>$ ./gradlew intTest
+       <pre>$ ./gradlew test
 :prepareInplaceWebAppFolder UP-TO-DATE
 :createInplaceWebAppFolder UP-TO-DATE
-:compileJava
+:compileJava UP-TO-DATE
 :processResources UP-TO-DATE
-:classes
-:prepareInplaceWebAppClasses
-:prepareInplaceWebApp
-:compileTestJava
+:classes UP-TO-DATE
+:prepareInplaceWebAppClasses UP-TO-DATE
+:prepareInplaceWebApp UP-TO-DATE
+:compileTestJava UP-TO-DATE
 :processTestResources UP-TO-DATE
-:testClasses
+:testClasses UP-TO-DATE
 :appBeforeIntegrationTest
-16:38:33 INFO  Jetty 9.2.15.v20160210 started and listening on port 8080
-16:38:33 INFO  webdemo runs at:
-16:38:33 INFO    http://localhost:8080/webdemo
-:intTest
+12:57:56 INFO  Jetty 9.2.15.v20160210 started and listening on port 8080
+12:57:56 INFO  webdemo runs at:
+12:57:56 INFO    http://localhost:8080/webdemo
+:test
 :appAfterIntegrationTest
 Server stopped.
 
@@ -690,40 +698,6 @@ BUILD SUCCESSFUL</pre>
      </div> 
      <div class="paragraph"> 
       <p>The <code>gretty</code> plugin starts up an embedded version of Jetty 9 on the default port, executes the tests, and shuts down the server. If you watch, you’ll see the Selenium system open a new browser, access the site, complete the form, click the button, check the new page, and finally shut down the browser.</p> 
-     </div> 
-     <div class="paragraph"> 
-      <p>There is one remaining problem. If you simply run the <code>test</code> task, the server does not start and the integration test therefore fails. This can be fixed in a variety of ways, but the easiest is to tell <code>gretty</code> to start the server whenever you run tests.</p> 
-     </div> 
-     <div class="paragraph"> 
-      <p>Change the <code>build.gradle</code> file to be:</p> 
-     </div> 
-     <div class="listingblock"> 
-      <div class="title">
-       Make gretty start and stop the server on all tests
-      </div> 
-      <div class="content"> 
-       <pre class="CodeRay highlight"><code data-lang="groovy">gretty {
-    integrationTestTask = <span class="string"><span class="delimiter">'</span><span class="content">test</span><span class="delimiter">'</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
-}
-
-<span class="comment">// task intTest(type: Test) {} </span><i class="conum" data-value="2"></i><b>(2)</b>
-
-<span class="comment">// ... rest from before ...</span></code></pre> 
-      </div> 
-     </div> 
-     <div class="colist arabic"> 
-      <table> 
-       <tbody>
-        <tr> 
-         <td><i class="conum" data-value="1"></i><b>1</b></td> 
-         <td>Start server on all tests</td> 
-        </tr> 
-        <tr> 
-         <td><i class="conum" data-value="2"></i><b>2</b></td> 
-         <td>No longer need separate task</td> 
-        </tr> 
-       </tbody>
-      </table> 
      </div> 
      <div class="paragraph"> 
       <p>Integration tests are often handled by creating a separate source set and dedicated tasks, but that is beyond the scope of this guide. See the <a href="http://akhikhl.github.io/gretty-doc/">Gretty documentation</a> for details.</p> 
@@ -761,7 +735,7 @@ BUILD SUCCESSFUL</pre>
   </div> 
   <div id="footer"> 
    <div id="footer-text">
-     Last updated 2017-04-02 21:25:55 UTC 
+     Last updated 2017-04-03 17:39:22 UTC 
    </div> 
   </div>  
  </body>

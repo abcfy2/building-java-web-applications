@@ -205,10 +205,20 @@
 <p>A text editor or IDE</p>
 </li>
 <li>
-<p>A Java distribution, version 7 or higher</p>
+<p>A Java distribution</p>
+<div class="ulist">
+<ul>
+<li>
+<p>version 7 or higher if using the Gradle Groovy DSL</p>
 </li>
 <li>
-<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 4.7 or better</p>
+<p>version 8 or higher if using the Gradle Kotlin DSL</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 4.8 or better</p>
 </li>
 </ul>
 </div>
@@ -218,7 +228,7 @@
 <h2 id="create_the_structure_of_a_web_application"><a class="anchor" href="#create_the_structure_of_a_web_application"></a><a class="link" href="#create_the_structure_of_a_web_application">Create the structure of a web application</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Gradle includes a <code>war</code> plugin that is documented in the  <a href="https://docs.gradle.org/4.7/userguide/web_project_tutorial.html">Web Application Quickstart</a> and the <a href="https://docs.gradle.org/4.7/userguide/war_plugin.html">WAR plugin chapter</a> of the user manual. The <code>war</code> plugin extends the Java plugin to add support for web applications. By default, it uses a folder called <code>src/main/webapp</code> for web-related resources.</p>
+<p>Gradle includes a <code>war</code> plugin that is documented in the  <a href="https://docs.gradle.org/4.8/userguide/web_project_tutorial.html">Web Application Quickstart</a> and the <a href="https://docs.gradle.org/4.8/userguide/war_plugin.html">WAR plugin chapter</a> of the user manual. The <code>war</code> plugin extends the Java plugin to add support for web applications. By default, it uses a folder called <code>src/main/webapp</code> for web-related resources.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -256,9 +266,9 @@ The "Web Application Quickstart" section in the User Manual still refers to the 
 <h2 id="add_a_gradle_build_file"><a class="anchor" href="#add_a_gradle_build_file"></a><a class="link" href="#add_a_gradle_build_file">Add a Gradle build file</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Add a file called <code>build.gradle</code> to the root of the project, with the following contents:</p>
+<p>Add a file called <code>build.gradle</code> (if using the Groovy DSL) or <code>build.gradle.kts</code> (if using the Kotlin DSL) to the root of the project, with the following contents:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
@@ -272,6 +282,23 @@ repositories {
 dependencies {
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0' <i class="conum" data-value="2"></i><b>(2)</b>
     testCompile 'junit:junit:4.12'
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
+    war  <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    providedCompile("javax.servlet:javax.servlet-api:3.1.0") <i class="conum" data-value="2"></i><b>(2)</b>
+    testCompile("junit:junit:4.12")
 }</code></pre>
 </div>
 </div>
@@ -298,12 +325,12 @@ dependencies {
 </div>
 <div class="listingblock terminal">
 <div class="content">
-<pre>$ gradle wrapper --gradle-version=4.7
+<pre>$ gradle wrapper --gradle-version=4.8
 :wrapper</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This will produce <code>gradlew</code> and <code>gradlew.bat</code> scripts and the <code>gradle</code> folder with the wrapper jar inside as described in the <a href="https://docs.gradle.org/4.7/userguide/gradle_wrapper.html">wrapper section</a> of the User Manual.</p>
+<p>This will produce <code>gradlew</code> and <code>gradlew.bat</code> scripts and the <code>gradle</code> folder with the wrapper jar inside as described in the <a href="https://docs.gradle.org/4.8/userguide/gradle_wrapper.html">wrapper section</a> of the User Manual.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -333,12 +360,12 @@ If you are using Gradle 4.0 or later you may see less output from the console th
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-java" data-lang="java">package org.gradle.demo;
 
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @WebServlet(name = "HelloServlet", urlPatterns = {"hello"}, loadOnStartup = 1) <i class="conum" data-value="1"></i><b>(1)</b>
 public class HelloServlet extends HttpServlet {
@@ -462,14 +489,23 @@ The <code>war</code> plugin supports the use of the older <code>web.xml</code> d
 <p>The <code>gretty</code> plugin is an outstanding community-supported plugin that can be found in the Gradle plugin repository at <code><a href="https://plugins.gradle.org/plugin/org.akhikhl.gretty" class="bare">https://plugins.gradle.org/plugin/org.akhikhl.gretty</a></code>. The plugin makes it easy to run or test webapps on either Jetty or Tomcat.</p>
 </div>
 <div class="paragraph">
-<p>Add it to our project by adding the following line to the <code>plugins</code> block inside <code>build.gradle</code>.</p>
+<p>Add it to our project by adding the following line to the <code>plugins</code> block inside the build script.</p>
 </div>
-<div class="listingblock">
-<div class="title">Updating <code>build.gradle</code> to add <code>gretty</code></div>
+<div class="listingblock multi-language-sample">
+<div class="title"><code>build.gradle</code></div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
     id 'war'
     id 'org.gretty' version '2.2.0' <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"><code>build.gradle.kts</code></div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
+    war
+    id("org.gretty") version "2.2.0" <i class="conum" data-value="1"></i><b>(1)</b>
 }</code></pre>
 </div>
 </div>
@@ -517,15 +553,25 @@ BUILD SUCCESSFUL</pre>
 <h2 id="unit_test_the_servlet_using_mockito"><a class="anchor" href="#unit_test_the_servlet_using_mockito"></a><a class="link" href="#unit_test_the_servlet_using_mockito">Unit test the servlet using Mockito</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The open source <a href="http://site.mockito.org/">Mockito framework</a> makes it easy to unit test Java applications. Add the Mockito dependency to the <code>build.gradle</code> file under the <code>testCompile</code> configuration.</p>
+<p>The open source <a href="http://site.mockito.org/">Mockito framework</a> makes it easy to unit test Java applications. Add the Mockito dependency to the build script under the <code>testCompile</code> configuration.</p>
 </div>
-<div class="listingblock">
-<div class="title">Adding the Mockito library to <code>build.gradle</code></div>
+<div class="listingblock multi-language-sample">
+<div class="title"><code>build.gradle</code></div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">dependencies {
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.7.19'  <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"><code>build.gradle.kts</code></div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">dependencies {
+    providedCompile("javax.servlet:javax.servlet-api:3.1.0")
+    testCompile("junit:junit:4.12")
+    testCompile("org.mockito:mockito-core:2.7.19")  <i class="conum" data-value="1"></i><b>(1)</b>
 }</code></pre>
 </div>
 </div>
@@ -647,10 +693,10 @@ BUILD SUCCESSFUL</pre>
 <h2 id="add_a_functional_test"><a class="anchor" href="#add_a_functional_test"></a><a class="link" href="#add_a_functional_test">Add a functional test</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <code>gretty</code> plugin combines with Gradle to make it easy to add functional tests to web applications. To do so, add the following lines to your <code>build.gradle</code> file:</p>
+<p>The <code>gretty</code> plugin combines with Gradle to make it easy to add functional tests to web applications. To do so, add the following lines to your build script:</p>
 </div>
-<div class="listingblock">
-<div class="title">Gretty additions to <code>build.gradle</code> for functional testing</div>
+<div class="listingblock multi-language-sample">
+<div class="title"><code>build.gradle</code></div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">gretty {
     integrationTestTask = 'test'  <i class="conum" data-value="1"></i><b>(1)</b>
@@ -664,6 +710,24 @@ dependencies {
     testCompile 'org.mockito:mockito-core:2.7.19'
     testCompile 'io.github.bonigarcia:webdrivermanager:1.6.1' <i class="conum" data-value="2"></i><b>(2)</b>
     testCompile 'org.seleniumhq.selenium:selenium-java:3.3.1' <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"><code>build.gradle.kts</code></div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">gretty {
+    integrationTestTask = "test"  <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+// ... rest from before ...
+
+dependencies {
+    providedCompile("javax.servlet:javax.servlet-api:3.1.0")
+    testCompile("junit:junit:4.12")
+    testCompile("org.mockito:mockito-core:2.7.19")
+    testCompile("io.github.bonigarcia:webdrivermanager:1.6.1") <i class="conum" data-value="2"></i><b>(2)</b>
+    testCompile("org.seleniumhq.selenium:selenium-java:3.3.1") <i class="conum" data-value="3"></i><b>(3)</b>
 }</code></pre>
 </div>
 </div>

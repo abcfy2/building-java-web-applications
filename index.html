@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.6.1">
+<meta name="generator" content="Asciidoctor 1.5.5">
 <title>Building Java Web Applications</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+
 <link crossorigin href="//assets.gradle.com" rel="preconnect">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,400i">
-<link rel="stylesheet" href="https://guides.gradle.org/css/asciidoctor.css">
-<link rel="stylesheet" href="https://guides.gradle.org/css/docs-blue-theme-4.8.1.css">
+<link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet">
+<link rel="stylesheet" href="https://guides.gradle.org/css/docs-blue-theme-4.10.css">
 <link rel="apple-touch-icon" sizes="180x180" href="https://guides.gradle.org/icon/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="https://guides.gradle.org/icon/favicon-32x32.png" sizes="32x32">
 <link rel="icon" type="image/png" href="https://guides.gradle.org/icon/favicon-16x16.png" sizes="16x16">
 <link rel="manifest" href="https://guides.gradle.org/icon/manifest.json">
 <link rel="shortcut icon" href="https://guides.gradle.org/icon/favicon.ico">
-<script defer src="https://guides.gradle.org/js/guides-4.8.js"></script>
+<script defer src="https://guides.gradle.org/js/guides-4.10.js"></script>
 <script defer src="https://guides.gradle.org/js/set-time-to-complete-text.js"></script>
 <script async src="https://guides.gradle.org/js/autotrack.js"></script>
 
@@ -167,14 +167,6 @@
     <div class="chapter">
 <div id="header">
 <h1>Building Java Web Applications</h1>
-</div>
-<div id="content">
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>Gradle includes a <code>war</code> plugin for building Java web applications, and the community supplies an excellent plugin called <code>gretty</code> for testing and deploying web applications on Jetty or Tomcat. This guide demonstrates how to build a simple web app and deploy it on Jetty using the <code>gretty</code> plugin. You&#8217;ll also learn how to write a unit test for a servlet using the Mockito framework and how to write a functional test for the web app using <code>gretty</code> and Selenium.</p>
-</div>
-</div>
 <div id="toc" class="toc">
 <div id="toctitle">Contents</div>
 <ul class="sectlevel1">
@@ -191,6 +183,14 @@
 <li><a href="#next_steps">Next steps</a></li>
 <li><a href="#help_improve_this_guide">Help improve this guide</a></li>
 </ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Gradle includes a <code>war</code> plugin for building Java web applications, and the community supplies an excellent plugin called <code>gretty</code> for testing and deploying web applications on Jetty or Tomcat. This guide demonstrates how to build a simple web app and deploy it on Jetty using the <code>gretty</code> plugin. You&#8217;ll also learn how to write a unit test for a servlet using the Mockito framework and how to write a functional test for the web app using <code>gretty</code> and Selenium.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -218,7 +218,7 @@
 </div>
 </li>
 <li>
-<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 4.8 or better</p>
+<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 4.10-rc-2 or better</p>
 </li>
 </ul>
 </div>
@@ -228,7 +228,7 @@
 <h2 id="create_the_structure_of_a_web_application"><a class="anchor" href="#create_the_structure_of_a_web_application"></a><a class="link" href="#create_the_structure_of_a_web_application">Create the structure of a web application</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Gradle includes a <code>war</code> plugin that is documented in the  <a href="https://docs.gradle.org/4.8/userguide/web_project_tutorial.html">Web Application Quickstart</a> and the <a href="https://docs.gradle.org/4.8/userguide/war_plugin.html">WAR plugin chapter</a> of the user manual. The <code>war</code> plugin extends the Java plugin to add support for web applications. By default, it uses a folder called <code>src/main/webapp</code> for web-related resources.</p>
+<p>Gradle includes a <code>war</code> plugin that is documented in the <a href="https://docs.gradle.org/4.10-rc-2/userguide/war_plugin.html">WAR plugin chapter</a> of the user manual. The <code>war</code> plugin extends the Java plugin to add support for web applications. By default, it uses a folder called <code>src/main/webapp</code> for web-related resources.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -325,12 +325,12 @@ dependencies {
 </div>
 <div class="listingblock terminal">
 <div class="content">
-<pre>$ gradle wrapper --gradle-version=4.8
+<pre>$ gradle wrapper --gradle-version=4.10-rc-2
 :wrapper</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This will produce <code>gradlew</code> and <code>gradlew.bat</code> scripts and the <code>gradle</code> folder with the wrapper jar inside as described in the <a href="https://docs.gradle.org/4.8/userguide/gradle_wrapper.html">wrapper section</a> of the User Manual.</p>
+<p>This will produce <code>gradlew</code> and <code>gradlew.bat</code> scripts and the <code>gradle</code> folder with the wrapper jar inside as described in the <a href="https://docs.gradle.org/4.10-rc-2/userguide/gradle_wrapper.html">wrapper section</a> of the User Manual.</p>
 </div>
 <div class="admonitionblock note">
 <table>

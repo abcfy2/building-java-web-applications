@@ -11,11 +11,12 @@ class ValidateSteps extends Specification {
 
     static final File SAMPLES_DIR = new File(System.getProperty('samplesDir') ?: 'samples').absoluteFile
 
-    @Rule TemporaryFolder temporaryFolder = new TemporaryFolder()
+    @Rule
+    TemporaryFolder temporaryFolder = new TemporaryFolder()
     File workingDir
 
     void setup() {
-        workingDir = new File(temporaryFolder.root,'webdemo')
+        workingDir = new File(temporaryFolder.root, 'webdemo')
     }
 
     void copyProject(File sourceDir) {
@@ -24,7 +25,7 @@ class ValidateSteps extends Specification {
 
     void newBuildScript(File sourceDir, final String relativeCodePath, String buildScriptExtension) {
         Files.copy(new File(sourceDir, "${relativeCodePath}${buildScriptExtension}").toPath(),
-                   new File(workingDir, "build.gradle${buildScriptExtension}").toPath())
+            new File(workingDir, "build.gradle${buildScriptExtension}").toPath())
     }
 
     String build(String... args) {
@@ -41,11 +42,14 @@ class ValidateSteps extends Specification {
         String out = build 'build'
 
         then:
-        out.contains('''> Task :appAfterIntegrationTest
-Server stopped.''')
+        out.contains(new StringBuilder()
+            .append('> Task :appAfterIntegrationTest')
+            .append(System.getProperty("line.separator"))
+            .append('Server stopped.').toString())
+        out.contains('BUILD SUCCESSFUL')
 
         where:
-        dsl      | sourceDir                                 | extension
+        dsl      | sourceDir                           | extension
         'groovy' | new File(SAMPLES_DIR, 'groovy-dsl') | ''
         'kotlin' | new File(SAMPLES_DIR, 'kotlin-dsl') | '.kts'
     }

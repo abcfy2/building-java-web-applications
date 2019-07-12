@@ -1,6 +1,6 @@
 package org.gradle.demo;
 
-import io.github.bonigarcia.wdm.ChromeDriverManager;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -16,7 +16,7 @@ public class HelloServletFunctionalTest {
 
     @BeforeClass
     public static void setupClass() {
-        ChromeDriverManager.getInstance().setup(); // <1>
+        WebDriverManager.chromedriver().setup(); // <1>
     }
 
     @Before
